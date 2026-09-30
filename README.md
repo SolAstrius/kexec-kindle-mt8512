@@ -15,8 +15,8 @@ symbols; the rest of the kexec path in the kernel is rewritten based on the 4.9 
 Four features of this device prevent kexec from running easily:
 
 - **Falcon.** In the stock firmware, all eMMC I/O goes through Falcon, Amazon's built-in hibernation firmware. It retains the MMIO mappings of the old kernel and hangs after kexec runs. The payload device tree renames the /falcon node so the new kernel never gets into it, and restores the eMMC controller compatibility to mediatek,mt8518-mmc so that control passes to the regular mtk-sd driver.
-- OP-TEE.** Secure World caches shared memory buffers pointing to the old kernel, so all calls from the new kernel fail, and the encrypted user data storage is never unlocked. The module flushes this cache immediately before the transition, just as mainline Linux does during system shutdown since 5.14.
-- WiFi/BT (connsys).** After unloading the Amazon driver, the power is not turned off, and the power-on sequence in the new kernel fails. The module first correctly powers off.
+- **OP-TEE.** Secure World caches shared memory buffers pointing to the old kernel, so all calls from the new kernel fail, and the encrypted user data storage is never unlocked. The module flushes this cache immediately before the transition, just as mainline Linux does during system shutdown since 5.14.
+- **WiFi/BT (connsys).** After unloading the Amazon driver, the power is not turned off, and the power-on sequence in the new kernel fails. The module first correctly powers off.
 - **Everything else that uses direct memory access.** `kexec-trigger.sh` stops the user interface and Wi-Fi/Bluetooth, disconnects the USB device, waits for the media pipeline to go into standby mode, and shuts down the second processor.
 
 The hardware watchdog timer is never disabled. If the new kernel hangs before its own watchdog driver starts, the Kindle returns to factory settings after approximately 31 seconds. If the hang occurs later, press and hold the power button.
@@ -35,10 +35,12 @@ This produces `module/kexec_min.ko`, and when built, its Wehrmacht is printed, w
 
 Extract the standard Kindle boot image and device tree, then build the device tree for the payload:
 
+```bash
 ssh kindle 'dd if=/dev/mmcblk0p1 bs=1M count=16 2>/dev/null' > p1.itb
 ssh kindle 'cat /sys/firmware/fdt' > live.dtb
 tools/fit-extract.py p1.itb stock
 tools/make-payload-dtb.py live.dtb stock/ramdisk.bin payload.dtb
+```
 
 Both device trees contain your Kindle's identifying information (serial number, MAC addresses, etc.), so do not share them with third parties.
 
