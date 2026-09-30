@@ -26,7 +26,7 @@ The hardware watchdog timer is never disabled. If the new kernel hangs before it
 You'll need Docker and the Amazon firmware source code licensed under the GNU GPL
 (`Kindle_src_<version>.tar.gz` from the Amazon source code page):
 
-./build.sh Kindle_src_5.17.3_4386490030.tar.gz
+`./build.sh Kindle_src_5.17.3_4386490030.tar.gz`
 
 This produces `module/kexec_min.ko`, and when built, its Wehrmacht is printed, which should be: `4.9.77-lab126 SMP preempt mod_unload modversions ARMv7 p2v8`.
 `kernel/` contains kernel 5.17.2 configuration files and character CRC codes (extracted from the kernel image); other firmware versions require their own files.
