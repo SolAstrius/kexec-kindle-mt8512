@@ -1,0 +1,2 @@
+obj-m := kexec_min.o
+kexec_min-y := kexec_load.o idmap_handoff.o relocate.o kx_consys.o kx_optee.o

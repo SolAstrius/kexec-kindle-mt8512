@@ -1,0 +1,17 @@
+/build/
+
+# Kbuild output
+*.o
+*.ko
+*.mod.c
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+!/kernel/Module.symvers
+
+# Device images. A live or payload DTB holds the Kindle's idme store
+# (serial number, MAC addresses and more): never commit one.
+*.dtb
+*.itb
+*.bin
